@@ -768,7 +768,7 @@
 
   function resetMessageShell() {
     chatMessagesEl.innerHTML = MESSAGE_ONLY_MODE
-      ? `<div class="date-pill"><span>${getL('today')}</span></div>`
+      ? ''
       : `
       <div class="date-pill"><span>${getL('today')}</span></div>
       <div class="encryption-notice">
