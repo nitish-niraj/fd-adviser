@@ -49,6 +49,7 @@ let selectedLang = null;
   };
 
   const MAP_GEOJSON_URL = 'https://code.highcharts.com/mapdata/countries/in/in-all.geo.json';
+  const STATIC_MAP_IMAGE_PATH = 'assets/india-map.png';
 
   const LANGUAGE_MAP_COLORS = {
     hi: '#FF9933',
@@ -697,16 +698,58 @@ let selectedLang = null;
     updateMapSelection(selectedLang);
   }
 
+  async function tryRenderStaticMapImage(svg) {
+    const image = document.getElementById('indiaMapImage');
+    if (!image) return false;
+
+    const source = image.getAttribute('src') || STATIC_MAP_IMAGE_PATH;
+    if (!image.getAttribute('src')) {
+      image.setAttribute('src', source);
+    }
+
+    const loaded = await new Promise((resolve) => {
+      if (image.complete) {
+        resolve(Boolean(image.naturalWidth));
+        return;
+      }
+
+      const handleLoad = () => resolve(Boolean(image.naturalWidth));
+      const handleError = () => resolve(false);
+
+      image.addEventListener('load', handleLoad, { once: true });
+      image.addEventListener('error', handleError, { once: true });
+      image.setAttribute('src', source);
+    });
+
+    if (!loaded) {
+      image.hidden = true;
+      if (svg) svg.hidden = false;
+      return false;
+    }
+
+    image.hidden = false;
+    if (svg) svg.hidden = true;
+    setMapHint('चित्र मानचित्र सक्रिय है। भाषा चुनने के लिए नीचे बटन चुनें।', false);
+    return true;
+  }
+
   async function renderIndiaMap() {
     const svg = document.getElementById('indiaLanguageMap');
     if (!svg) return;
 
+    const staticImageRendered = await tryRenderStaticMapImage(svg);
+    if (staticImageRendered) {
+      return;
+    }
+
     try {
       const geojson = await fetchIndiaGeoJson();
+      svg.hidden = false;
       renderGeoJsonMap(svg, geojson);
       return;
     } catch (err) {
       console.warn('Falling back to built-in map:', err);
+      svg.hidden = false;
       renderLegacyMap(svg);
       setMapHint('बैकअप मानचित्र सक्रिय है (जम्मू-कश्मीर और लद्दाख सहित)', false);
     }

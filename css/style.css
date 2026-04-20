@@ -322,6 +322,16 @@ ul, ol { list-style: none; }
     linear-gradient(180deg, #ffffff, #f3f8ff);
 }
 
+.india-map-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 360 / 460;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid #d8e4ef;
+  background: linear-gradient(180deg, #ffffff, #f3f8ff);
+}
+
 .map-outline {
   fill: rgba(255,255,255,0.5);
   stroke: rgba(20, 56, 90, 0.32);

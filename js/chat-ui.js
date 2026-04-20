@@ -5,6 +5,7 @@
   console.log('[ChatUI Init] Persisted values - langCode:', langCode, 'language:', language, 'persona:', persona);
   const CHAT_SESSION_KEY = 'fd_chat_session_v1';
   const DEMO_MODE = new URLSearchParams(window.location.search).get('demo') === 'true';
+  const MESSAGE_ONLY_MODE = true;
 
   // ===== Localized UI Strings =====
   const L = {
@@ -766,7 +767,9 @@
   }
 
   function resetMessageShell() {
-    chatMessagesEl.innerHTML = `
+    chatMessagesEl.innerHTML = MESSAGE_ONLY_MODE
+      ? `<div class="date-pill"><span>${getL('today')}</span></div>`
+      : `
       <div class="date-pill"><span>${getL('today')}</span></div>
       <div class="encryption-notice">
         <span>${getL('encryptionNotice')}</span>
@@ -950,25 +953,27 @@
     const restoredSession = restoreChatSession();
 
     if (!restoredSession) {
-      // Show greeting from Meera - force fresh read of persisted values
-      const freshLangCode = localStorage.getItem('fd_lang') || 'hi';
-      const freshLanguage = AIEngine.langCodeToName[freshLangCode] || 'hindi';
-      const freshPersona = localStorage.getItem('fd_persona') || 'kisan';
-      console.log('[ChatUI Greeting] Using fresh values - lang:', freshLanguage, 'persona:', freshPersona);
-      const greeting = await AIEngine.getGreeting(freshLanguage, freshPersona);
-      addAssistantMessage(greeting, {
-        autoSpeak: voiceModeEnabled,
-        loopAfterSpeak: false,
-      });
-      renderTrustStrip();
+      if (!MESSAGE_ONLY_MODE) {
+        // Show greeting from Meera - force fresh read of persisted values
+        const freshLangCode = localStorage.getItem('fd_lang') || 'hi';
+        const freshLanguage = AIEngine.langCodeToName[freshLangCode] || 'hindi';
+        const freshPersona = localStorage.getItem('fd_persona') || 'kisan';
+        console.log('[ChatUI Greeting] Using fresh values - lang:', freshLanguage, 'persona:', freshPersona);
+        const greeting = await AIEngine.getGreeting(freshLanguage, freshPersona);
+        addAssistantMessage(greeting, {
+          autoSpeak: voiceModeEnabled,
+          loopAfterSpeak: false,
+        });
+        renderTrustStrip();
 
-      // Add greeting to chat history
-      chatHistory.push({ role: 'assistant', content: greeting });
-      persistChatSession();
+        // Add greeting to chat history
+        chatHistory.push({ role: 'assistant', content: greeting });
+        persistChatSession();
 
-      // Show initial quick replies
-      const initialReplies = AIEngine.getInitialQuickReplies(language);
-      showQuickReplies(initialReplies);
+        // Show initial quick replies
+        const initialReplies = AIEngine.getInitialQuickReplies(language);
+        showQuickReplies(initialReplies);
+      }
     } else {
       firstAIInteractionDone = chatHistory.length > 0;
     }
@@ -1174,6 +1179,7 @@
   }
 
   function showQuickReplies(replies) {
+    if (MESSAGE_ONLY_MODE) return;
     if (!replies || replies.length === 0) return;
 
     // Remove any existing quick replies
@@ -2149,26 +2155,28 @@
     chatHistory.push({ role: 'assistant', content: fullText });
     persistChatSession();
 
-    if (meta.source === 'offline-fallback') {
-      addInfoBubble('कनेक्शन अस्थायी रूप से सीमित है, इसलिए स्थानीय उत्तर दिखाया गया है।', 'voice');
-      if (!connectHintShown) {
-        connectHintShown = true;
-        addInfoBubble(getCloudConnectHintText(), 'fact');
+    if (!MESSAGE_ONLY_MODE) {
+      if (meta.source === 'offline-fallback') {
+        addInfoBubble('कनेक्शन अस्थायी रूप से सीमित है, इसलिए स्थानीय उत्तर दिखाया गया है।', 'voice');
+        if (!connectHintShown) {
+          connectHintShown = true;
+          addInfoBubble(getCloudConnectHintText(), 'fact');
+        }
+      } else if (meta.model && !modelMetaShown) {
+        modelMetaShown = true;
+        const providerText = meta.provider ? ` (${meta.provider})` : '';
+        const modelTag = language === 'english'
+          ? `AI model: ${meta.model}${providerText}`
+          : `एआई मॉडल: ${meta.model}${providerText}`;
+        addInfoBubble(modelTag, 'fact');
       }
-    } else if (meta.model && !modelMetaShown) {
-      modelMetaShown = true;
-      const providerText = meta.provider ? ` (${meta.provider})` : '';
-      const modelTag = language === 'english'
-        ? `AI model: ${meta.model}${providerText}`
-        : `एआई मॉडल: ${meta.model}${providerText}`;
-      addInfoBubble(modelTag, 'fact');
-    }
 
-    if (meta.repaired) {
-      const repairMsg = language === 'english'
-        ? 'Language output was auto-corrected for script consistency.'
-        : 'भाषा की शुद्धता बनाए रखने के लिए उत्तर स्वतः सुधारा गया।';
-      addInfoBubble(repairMsg, 'fact');
+      if (meta.repaired) {
+        const repairMsg = language === 'english'
+          ? 'Language output was auto-corrected for script consistency.'
+          : 'भाषा की शुद्धता बनाए रखने के लिए उत्तर स्वतः सुधारा गया।';
+        addInfoBubble(repairMsg, 'fact');
+      }
     }
 
     if (!firstAIInteractionDone) {
@@ -2179,7 +2187,7 @@
     }
 
     // --- Phase 3: Cultural + Persona Intelligence ---
-    if (isFDCalculationResponse(fullText)) {
+    if (!MESSAGE_ONLY_MODE && isFDCalculationResponse(fullText)) {
       const combinedText = `${message}\n${fullText}`;
       saveSharePlanFromResponse(fullText, combinedText);
 
@@ -2225,7 +2233,7 @@
       }
     }
 
-    if (shouldShowCalculatorCard) {
+    if (!MESSAGE_ONLY_MODE && shouldShowCalculatorCard) {
       const principal = extractPrincipalFromText(message) || extractPrincipalFromText(fullText) || 50000;
       const inferredTenor = extractTenorMonths(`${message}\n${fullText}`) || lastDiscussedTenorMonths || 12;
 
@@ -2235,10 +2243,12 @@
     }
 
     // Show quick replies from AI or fallback
-    const replies = quickReplies.length > 0
-      ? quickReplies
-      : AIEngine.getInitialQuickReplies(language).slice(0, 3);
-    showQuickReplies(replies);
+    if (!MESSAGE_ONLY_MODE) {
+      const replies = quickReplies.length > 0
+        ? quickReplies
+        : AIEngine.getInitialQuickReplies(language).slice(0, 3);
+      showQuickReplies(replies);
+    }
   }
 
   function sendMessage() {
@@ -2296,6 +2306,8 @@
   // ===== Info Bubbles (Festival alerts, Did You Know) =====
 
   function addInfoBubble(text, type, options = {}) {
+    if (MESSAGE_ONLY_MODE) return;
+
     const { persist = true } = options;
 
     const themes = {
