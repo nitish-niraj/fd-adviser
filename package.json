@@ -1,0 +1,22 @@
+{
+  "name": "vernacular-fd-advisor",
+  "version": "1.0.0",
+  "description": "Bharat Ka Apna FD Advisor — Multilingual AI-powered Fixed Deposit advisor with voice, jargon simplification, and guided booking flow for Bharat.",
+  "private": true,
+  "keywords": [
+    "fintech",
+    "fd-advisor",
+    "multilingual",
+    "india",
+    "bhojpuri",
+    "hindi",
+    "puter",
+    "pwa",
+    "ai-chat"
+  ],
+  "author": "Vernacular Finance Builders",
+  "license": "MIT",
+  "scripts": {
+    "serve": "npx -y serve@latest . -p 3000"
+  }
+}

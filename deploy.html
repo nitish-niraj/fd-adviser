@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deploy FD Advisor</title>
+  <style>
+    body {
+      font-family: 'Noto Sans', system-ui, -apple-system, sans-serif;
+      max-width: 780px;
+      margin: 24px auto;
+      padding: 0 14px 24px;
+      background: #f8fafc;
+      color: #1f2937;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: #475569;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    #deployBtn {
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #128C7E, #25D366);
+      color: white;
+      font-weight: 800;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    #deployBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #log {
+      margin-top: 14px;
+      background: #0b1220;
+      color: #d1fae5;
+      border-radius: 12px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      min-height: 120px;
+      max-height: 60vh;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .hint {
+      margin-top: 8px;
+      color: #6b7280;
+      font-size: 12px;
+    }
+  </style>
+  <script src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+  <div class="card">
+    <button type="button" id="backBtn" onclick="window.location.href='index.html'" style="margin-bottom:8px; border:1px solid #d1d5db; border-radius:999px; padding:6px 10px; background:white; font-weight:700;">← Back</button>
+    <h2>Deploying FD Advisor</h2>
+    <p>Run this page from a local HTTP server (not file://) and click deploy once.</p>
+    <button id="deployBtn" onclick="deployApp()">Deploy Now</button>
+    <div class="hint">Target: https://fd-advisor-bharat.puter.site</div>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const FILES_TO_UPLOAD = [
+      'index.html',
+      'chat.html',
+      'booking.html',
+      'compare.html',
+      'css/style.css',
+      'css/chat.css',
+      'css/booking.css',
+      'css/compare.css',
+      'js/ai-engine.js',
+      'js/voice.js',
+      'js/fd-data.js',
+      'js/booking.js',
+      'js/index-ui.js',
+      'js/chat-ui.js',
+      'js/booking-ui.js',
+      'js/compare-ui.js',
+      'js/puter-init.js',
+      'js/persona-engine.js',
+      'js/cultural-engine.js',
+      'js/pwa.js',
+      'data/fd-rates.json',
+      'manifest.json',
+      'service-worker.js',
+      'icon-192.png',
+      'icon-512.png'
+    ];
+
+    const DIR_NAME = 'fd-advisor-app';
+    const SUBDOMAIN = 'fd-advisor-bharat';
+
+    function log(message) {
+      const logEl = document.getElementById('log');
+      logEl.textContent += message + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    async function ensureDir(path) {
+      try {
+        await puter.fs.mkdir(path);
+      } catch (err) {
+        // Existing folder should not fail deployment.
+      }
+    }
+
+    async function ensureNestedDirs(rootDir, filePath) {
+      const parts = filePath.split('/');
+      if (parts.length <= 1) return;
+
+      let current = rootDir;
+      for (let i = 0; i < parts.length - 1; i += 1) {
+        current += '/' + parts[i];
+        await ensureDir(current);
+      }
+    }
+
+    async function fetchAsFile(path) {
+      const response = await fetch(path, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error('Could not read local file: ' + path);
+      }
+
+      const blob = await response.blob();
+      const name = path.split('/').pop() || path;
+      return new File([blob], name, { type: blob.type || 'application/octet-stream' });
+    }
+
+    async function tryUpload(file, destination) {
+      const attempts = [
+        () => puter.fs.upload(file, destination),
+        () => puter.fs.upload([file], destination),
+        () => puter.fs.upload(file, { path: destination }),
+        () => puter.fs.upload([file], { path: destination })
+      ];
+
+      let lastError = null;
+      for (const attempt of attempts) {
+        try {
+          await attempt();
+          return;
+        } catch (err) {
+          lastError = err;
+        }
+      }
+
+      throw lastError || new Error('Upload failed for: ' + destination);
+    }
+
+    async function deployApp() {
+      const button = document.getElementById('deployBtn');
+      button.disabled = true;
+      document.getElementById('log').textContent = '';
+
+      try {
+        await puter.auth.signIn();
+        log('OK Signed in');
+
+        await ensureDir(DIR_NAME);
+        log('OK Created root directory: ' + DIR_NAME);
+
+        for (const filePath of FILES_TO_UPLOAD) {
+          await ensureNestedDirs(DIR_NAME, filePath);
+
+          const fileObj = await fetchAsFile(filePath);
+          const destination = DIR_NAME + '/' + filePath;
+          await tryUpload(fileObj, destination);
+          log('OK Uploaded: ' + filePath);
+        }
+
+        try {
+          await puter.hosting.create(SUBDOMAIN, DIR_NAME);
+          log('OK Hosting created');
+        } catch (err) {
+          await puter.hosting.update(SUBDOMAIN, { root_dir: DIR_NAME });
+          log('OK Hosting updated');
+        }
+
+        log('LIVE URL: https://' + SUBDOMAIN + '.puter.site');
+      } catch (err) {
+        log('ERROR: ' + (err && err.message ? err.message : String(err)));
+        console.error(err);
+      } finally {
+        button.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Complete FD booking flow with Meera assistant.">
+  <meta name="theme-color" content="#25D366">
+  <title>एफडी बुकिंग — Bharat Ka Apna FD Advisor</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/booking.css">
+</head>
+<body>
+
+<div class="booking-page">
+  <div class="booking-container">
+    <div class="booking-header">
+      <a href="chat.html" style="color:white; font-size:20px;">←</a>
+      <div style="flex:1;">
+        <h1 id="bookingHeaderTitle">एफडी बुकिंग</h1>
+        <div class="booking-conn-status" id="bookingConnStatus">कनेक्शन जाँच रहे हैं...</div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-steps" id="progressSteps">
+        <div class="progress-step" data-step="0"><div class="step-circle active">1</div><div class="step-label active" id="lblStep1">लक्ष्य</div></div>
+        <div class="progress-step" data-step="1"><div class="step-circle">2</div><div class="step-label" id="lblStep2">राशि</div></div>
+        <div class="progress-step" data-step="2"><div class="step-circle">3</div><div class="step-label" id="lblStep3">अवधि</div></div>
+        <div class="progress-step" data-step="3"><div class="step-circle">4</div><div class="step-label" id="lblStep4">विवरण</div></div>
+        <div class="progress-step" data-step="4"><div class="step-circle">5</div><div class="step-label" id="lblStep5">समीक्षा</div></div>
+      </div>
+    </div>
+
+    <div class="booking-chat" id="bookingChat">
+      <div class="date-pill"><span>Today</span></div>
+    </div>
+
+    <div class="booking-input-area" id="bookingInputArea"></div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">मीरा बुकिंग प्रक्रिया तैयार कर रही है...</div>
+</div>
+
+<script src="js/puter-init.js"></script>
+<script src="js/fd-data.js"></script>
+<script src="js/cultural-engine.js"></script>
+<script src="js/booking.js"></script>
+<script src="js/pwa.js"></script>
+
+<script src="js/booking-ui.js"></script>
+
+</body>
+</html>

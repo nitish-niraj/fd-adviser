@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Compare Fixed Deposit returns across banks in real time.">
+  <meta name="theme-color" content="#25D366">
+  <title>एफडी तुलना — Bharat Ka Apna FD Advisor</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/compare.css">
+</head>
+<body>
+
+<div class="compare-page">
+  <div class="cmp4-wrap">
+    <div class="cmp4-header">
+      <a href="chat.html" class="cmp4-back" aria-label="Back">←</a>
+      <div>
+        <h1 id="cmp4Title">आज के सर्वोत्तम एफडी विकल्प</h1>
+        <p id="cmp4Subtitle">राशि और अवधि बदलते ही परिणाम तुरंत अपडेट होगा।</p>
+        <div class="cmp4-conn-status" id="cmp4ConnStatus">कनेक्शन जाँच रहे हैं...</div>
+      </div>
+    </div>
+
+    <div class="cmp4-controls">
+      <div class="cmp4-tenor-tabs" id="cmp4TenorTabs"></div>
+
+      <div class="cmp4-row">
+        <span class="cmp4-label" id="cmp4SeniorLabel">वरिष्ठ नागरिक (+0.50%)</span>
+        <label class="cmp4-switch">
+          <input type="checkbox" id="cmp4SeniorToggle">
+          <span class="cmp4-slider"></span>
+        </label>
+      </div>
+
+      <div class="cmp4-slider-block">
+        <div class="cmp4-row" style="margin-bottom: 0;">
+          <span class="cmp4-label" id="cmp4AmountLabel">राशि</span>
+          <span class="cmp4-amount-value" id="cmp4AmountValue">₹1,00,000</span>
+        </div>
+        <input class="cmp4-range" id="cmp4AmountSlider" type="range" min="10000" max="1000000" step="10000" value="100000">
+      </div>
+
+      <div class="cmp4-festival" id="cmp4Festival" style="display:none;"></div>
+      <div class="cmp4-live-meta" id="cmp4LiveMeta">दर स्रोत: स्थानीय स्नैपशॉट</div>
+      <div class="cmp4-diff" id="cmp4Difference"></div>
+    </div>
+
+    <div class="cmp4-rows" id="cmp4Rows"></div>
+
+    <div class="cmp4-help">
+      <p id="cmp4HelpText">सही बैंक चुनने में सहायता चाहिए?</p>
+      <a href="chat.html" id="cmp4HelpLink">मीरा से बात करें →</a>
+    </div>
+  </div>
+
+  <div style="max-width:480px; margin:0 auto; position:fixed; bottom:0; left:0; right:0;">
+    <div class="chat-nav-bar">
+      <button class="chat-nav-btn" onclick="window.location.href='chat.html'">
+        💬 <span>Chat</span>
+      </button>
+      <button class="chat-nav-btn active" onclick="window.location.href='compare.html'">
+        📊 <span>तुलना</span>
+      </button>
+      <button class="chat-nav-btn" onclick="window.location.href='booking.html'">
+        📋 <span>Book FD</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">एफडी दरें लोड हो रही हैं...</div>
+</div>
+
+<script src="js/fd-data.js"></script>
+<script src="js/cultural-engine.js"></script>
+<script src="js/puter-init.js"></script>
+<script src="js/pwa.js"></script>
+
+<script src="js/compare-ui.js"></script>
+
+</body>
+</html>

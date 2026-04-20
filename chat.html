@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Chat with Meera — your AI FD Advisor. Get personalized Fixed Deposit advice in your language.">
+  <meta name="theme-color" content="#25D366">
+  <title>चैट — Bharat Ka Apna FD Advisor</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+
+<div class="chat-page">
+  <div class="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+      <a href="index.html" class="back-btn" title="Back">←</a>
+      <div class="chat-avatar">
+        👩‍💼
+        <div class="online-dot"></div>
+      </div>
+      <div class="chat-header-info">
+        <div class="chat-header-name">मीरा (एफडी सलाहकार)</div>
+        <div class="chat-header-status-row">
+          <div class="chat-header-status" id="headerStatus">कनेक्शन जाँच रहे हैं...</div>
+          <span class="voice-mode-badge" id="voiceModeBadge">वॉइस मोड चालू</span>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button class="header-action-btn" id="connectBtn" title="Connect Cloud AI" onclick="connectCloudAI()">🔐</button>
+        <button class="header-action-btn" id="aiSettingsToggle" title="AI Settings" aria-label="AI Settings">⚙️</button>
+        <button class="header-action-btn voice-toggle-btn" id="voiceModeBtn" title="Voice mode" onclick="toggleVoiceMode()">🎧</button>
+        <button class="header-action-btn" id="shareBtn" title="Share" onclick="shareCurrentFDPlan()">🔗</button>
+        <span class="lang-badge" id="langBadge">HI</span>
+        <button class="header-action-btn my-fds-btn" title="मेरी एफडी" onclick="openMyBookingsSheet()">मेरी एफडी</button>
+        <button class="header-action-btn" title="एफडी तुलना" onclick="openCompareWithContext()">📊</button>
+        <button class="header-action-btn" title="एफडी बुकिंग" onclick="window.location.href='booking.html'">📋</button>
+      </div>
+    </div>
+
+    <div class="ai-settings-panel" id="aiSettingsPanel" hidden>
+      <div class="ai-settings-head">
+        <span>AI Settings</span>
+        <button class="ai-settings-refresh" id="refreshModelsBtn" title="Refresh providers and models">↻</button>
+      </div>
+      <div class="ai-settings-grid">
+        <label class="ai-settings-field">
+          <span>Provider</span>
+          <select id="aiProviderSelect">
+            <option value="">Auto</option>
+          </select>
+        </label>
+        <label class="ai-settings-field">
+          <span>Model</span>
+          <select id="aiModelSelect">
+            <option value="">Auto</option>
+          </select>
+        </label>
+      </div>
+      <label class="ai-settings-toggle">
+        <input type="checkbox" id="speechStyleToggle" checked>
+        <span>Speech style mode (speech2speech)</span>
+      </label>
+      <div class="ai-settings-status" id="aiSettingsStatus">Loading providers...</div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <div class="date-pill"><span>Today</span></div>
+      <div class="encryption-notice">
+        <span>🔒 AI सलाहकार। आपकी बैंकिंग जानकारी सुरक्षित है।</span>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="chat-input-bar">
+      <div class="chat-input-wrap">
+        <button class="emoji-btn" title="Emoji" onclick="insertEmoji()">😊</button>
+        <input
+          type="text"
+          id="chatInput"
+          placeholder="हिंदी में टाइप करें..."
+          autocomplete="off"
+          enterkeyhint="send"
+        >
+      </div>
+      <button class="input-action-btn mic-btn" id="micBtn" title="Voice input">🎤</button>
+      <button class="input-action-btn send-btn" id="sendBtn" title="Send" onclick="sendMessage()" style="display:none;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="voice-ready-prompt" id="voiceReadyPrompt">बोलिए...</div>
+
+    <div class="install-banner" id="installBanner" hidden>
+      <div class="install-banner-text">📱 इस ऐप को इंस्टॉल करें — बिना इंटरनेट के भी काम करेगा!</div>
+      <button class="install-banner-btn" id="installBannerBtn" onclick="triggerInstallPrompt()">Install</button>
+      <button class="install-banner-close" onclick="dismissInstallBanner()">×</button>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="chat-nav-bar">
+      <button class="chat-nav-btn active" onclick="window.location.href='chat.html'">
+        💬 <span>चैट</span>
+      </button>
+      <button class="chat-nav-btn" onclick="openCompareWithContext()">
+        📊 <span>तुलना</span>
+      </button>
+      <button class="chat-nav-btn" onclick="window.location.href='booking.html'">
+        📋 <span>बुकिंग</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">मीरा से जुड़ रहे हैं...</div>
+</div>
+
+<div class="my-bookings-backdrop" id="myBookingsBackdrop" onclick="closeMyBookingsSheet()"></div>
+<div class="my-bookings-sheet" id="myBookingsSheet" aria-hidden="true">
+  <div class="my-bookings-head">
+    <div>
+      <div class="my-bookings-title">मेरी एफडी</div>
+      <div class="my-bookings-sub">आपकी FD बुकिंग हिस्ट्री</div>
+    </div>
+    <button class="my-bookings-close" onclick="closeMyBookingsSheet()">✕</button>
+  </div>
+  <div class="my-bookings-list" id="myBookingsList">
+    <div class="my-bookings-empty">लोड हो रहा है...</div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/puter-init.js"></script>
+<script src="js/persona-engine.js"></script>
+<script src="js/cultural-engine.js"></script>
+<script src="js/ai-engine.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/fd-data.js"></script>
+<script src="js/booking.js"></script>
+
+<script src="js/chat-ui.js"></script>
+<script src="js/pwa.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+{
+  "banks": [
+    {
+      "id": "suryoday-sfb",
+      "name": "Suryoday Small Finance Bank",
+      "name_hi": "सूर्योदय स्मॉल फाइनेंस बैंक",
+      "type": "Small Finance Bank",
+      "is_rbi_regulated": true,
+      "dicgc_insured": true,
+      "fd_rates": [
+        { "tenor_months": 6, "rate": 7.25, "senior_rate": 7.75 },
+        { "tenor_months": 12, "rate": 8.50, "senior_rate": 9.00 },
+        { "tenor_months": 24, "rate": 8.25, "senior_rate": 8.75 },
+        { "tenor_months": 36, "rate": 8.10, "senior_rate": 8.60 }
+      ]
+    },
+    {
+      "id": "utkarsh-sfb",
+      "name": "Utkarsh Small Finance Bank",
+      "name_hi": "उत्कर्ष स्मॉल फाइनेंस बैंक",
+      "type": "Small Finance Bank",
+      "is_rbi_regulated": true,
+      "dicgc_insured": true,
+      "fd_rates": [
+        { "tenor_months": 6, "rate": 7.10, "senior_rate": 7.60 },
+        { "tenor_months": 12, "rate": 8.25, "senior_rate": 8.75 },
+        { "tenor_months": 24, "rate": 8.00, "senior_rate": 8.50 },
+        { "tenor_months": 36, "rate": 7.90, "senior_rate": 8.40 }
+      ]
+    },
+    {
+      "id": "jana-sfb",
+      "name": "Jana Small Finance Bank",
+      "name_hi": "जना स्मॉल फाइनेंस बैंक",
+      "type": "Small Finance Bank",
+      "is_rbi_regulated": true,
+      "dicgc_insured": true,
+      "fd_rates": [
+        { "tenor_months": 6, "rate": 7.00, "senior_rate": 7.50 },
+        { "tenor_months": 12, "rate": 8.00, "senior_rate": 8.50 },
+        { "tenor_months": 24, "rate": 7.85, "senior_rate": 8.35 },
+        { "tenor_months": 36, "rate": 7.75, "senior_rate": 8.25 }
+      ]
+    },
+    {
+      "id": "au-sfb",
+      "name": "AU Small Finance Bank",
+      "name_hi": "एयू स्मॉल फाइनेंस बैंक",
+      "type": "Small Finance Bank",
+      "is_rbi_regulated": true,
+      "dicgc_insured": true,
+      "fd_rates": [
+        { "tenor_months": 6, "rate": 6.75, "senior_rate": 7.25 },
+        { "tenor_months": 12, "rate": 7.75, "senior_rate": 8.25 },
+        { "tenor_months": 24, "rate": 7.50, "senior_rate": 8.00 },
+        { "tenor_months": 36, "rate": 7.40, "senior_rate": 7.90 }
+      ]
+    },
+    {
+      "id": "sbi",
+      "name": "State Bank of India",
+      "name_hi": "भारतीय स्टेट बैंक",
+      "type": "Public Sector Bank",
+      "is_rbi_regulated": true,
+      "dicgc_insured": true,
+      "fd_rates": [
+        { "tenor_months": 6, "rate": 5.75, "senior_rate": 6.25 },
+        { "tenor_months": 12, "rate": 6.50, "senior_rate": 7.00 },
+        { "tenor_months": 24, "rate": 6.80, "senior_rate": 7.30 },
+        { "tenor_months": 36, "rate": 6.75, "senior_rate": 7.25 }
+      ]
+    },
+    {
+      "id": "hdfc",
+      "name": "HDFC Bank",
+      "name_hi": "एचडीएफसी बैंक",
+      "type": "Private Bank",
+      "is_rbi_regulated": true,
+      "dicgc_insured": true,
+      "fd_rates": [
+        { "tenor_months": 6, "rate": 6.25, "senior_rate": 6.75 },
+        { "tenor_months": 12, "rate": 7.00, "senior_rate": 7.50 },
+        { "tenor_months": 24, "rate": 7.15, "senior_rate": 7.65 },
+        { "tenor_months": 36, "rate": 7.25, "senior_rate": 7.75 }
+      ]
+    }
+  ]
+}

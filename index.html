@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Bharat Ka Apna FD Advisor — अपनी भाषा में Fixed Deposit की सलाह। 10+ Indian languages supported. Compare FD rates, calculate returns, book FDs.">
+  <meta name="theme-color" content="#25D366">
+  <title>Bharat Ka Apna FD Advisor 🏦 | अपनी भाषा में भरोसेमंद एफडी सलाह</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="https://js.puter.com/v2/"></script>
+</head>
+<body>
+
+<div class="landing-page">
+  <div class="landing-card">
+    <button type="button" class="landing-back-btn" onclick="goBackFromLanding()" aria-label="Back">←</button>
+
+    <!-- Header -->
+    <div class="landing-header">
+      <div class="landing-logo">🏦</div>
+      <h1 class="landing-title">
+        <span class="saffron">Bharat Ka Apna</span><br>
+        <span class="green">FD Advisor</span>
+      </h1>
+      <p class="landing-tagline">अपनी भाषा में, भरोसेमंद एफडी मार्गदर्शन</p>
+    </div>
+
+    <div class="landing-connection-strip limited" id="landingConnectionStrip" aria-live="polite">
+      <span class="connection-dot" aria-hidden="true"></span>
+      <div class="connection-copy">
+        <div class="connection-title" id="connectionTitle">कनेक्शन जांच रहे हैं...</div>
+        <div class="connection-subtitle" id="connectionSubtitle">मॉडल चुना जा रहा है</div>
+      </div>
+    </div>
+
+    <!-- Language Selection -->
+    <div class="section-label">🗺️ भाषा मानचित्र</div>
+    <div class="india-map-wrap">
+      <svg class="india-map" id="indiaLanguageMap" viewBox="0 0 360 460" role="img" aria-label="India language regions map"></svg>
+      <div class="map-language-chip" id="mapLanguageChip">भाषा देखने के लिए मानचित्र पर टैप या होवर करें</div>
+    </div>
+
+    <div class="lang-auto-detect" id="langAutoDetect" hidden>
+      <div class="lang-auto-text" id="langDetectText">आपकी भाषा पहचानी गई: हिंदी। क्या यह सही है?</div>
+      <div class="lang-auto-actions">
+        <button class="lang-auto-btn" onclick="acceptDetectedLanguage()">हाँ</button>
+        <button class="lang-ghost-btn" onclick="changeDetectedLanguage()">बदलें</button>
+      </div>
+    </div>
+
+    <div class="lang-fallback" id="langFallback">
+      <label for="languageTypeInput">⌨️ मानचित्र उपयोग नहीं कर पा रहे? अपनी भाषा टाइप करें</label>
+      <div class="lang-fallback-row">
+        <input type="text" id="languageTypeInput" placeholder="Hindi / தமிழ் / বাংলা / Telugu">
+        <button type="button" onclick="applyTypedLanguage()">लागू करें</button>
+      </div>
+    </div>
+
+    <div class="section-label">🌐 उपलब्ध भाषाएँ</div>
+    <div class="lang-grid" id="langGrid">
+      <button class="lang-btn" data-lang="hi" onclick="selectLang(this)">
+        <span class="lang-script">हिंदी</span>
+        <span class="lang-name">Hindi</span>
+      </button>
+      <button class="lang-btn" data-lang="bn" onclick="selectLang(this)">
+        <span class="lang-script">বাংলা</span>
+        <span class="lang-name">Bengali</span>
+      </button>
+      <button class="lang-btn" data-lang="ta" onclick="selectLang(this)">
+        <span class="lang-script">தமிழ்</span>
+        <span class="lang-name">Tamil</span>
+      </button>
+      <button class="lang-btn" data-lang="te" onclick="selectLang(this)">
+        <span class="lang-script">తెలుగు</span>
+        <span class="lang-name">Telugu</span>
+      </button>
+      <button class="lang-btn" data-lang="mr" onclick="selectLang(this)">
+        <span class="lang-script">मराठी</span>
+        <span class="lang-name">Marathi</span>
+      </button>
+      <button class="lang-btn" data-lang="pa" onclick="selectLang(this)">
+        <span class="lang-script">ਪੰਜਾਬੀ</span>
+        <span class="lang-name">Punjabi</span>
+      </button>
+      <button class="lang-btn" data-lang="kn" onclick="selectLang(this)">
+        <span class="lang-script">ಕನ್ನಡ</span>
+        <span class="lang-name">Kannada</span>
+      </button>
+      <button class="lang-btn" data-lang="ml" onclick="selectLang(this)">
+        <span class="lang-script">മലയാളം</span>
+        <span class="lang-name">Malayalam</span>
+      </button>
+      <button class="lang-btn" data-lang="gu" onclick="selectLang(this)">
+        <span class="lang-script">ગુજરાતી</span>
+        <span class="lang-name">Gujarati</span>
+      </button>
+      <button class="lang-btn" data-lang="or" onclick="selectLang(this)">
+        <span class="lang-script">ଓଡ଼ିଆ</span>
+        <span class="lang-name">Odia</span>
+      </button>
+      <button class="lang-btn" data-lang="bho" onclick="selectLang(this)">
+        <span class="lang-script">भोजपुरी</span>
+        <span class="lang-name">Bhojpuri</span>
+      </button>
+      <button class="lang-btn" data-lang="en" onclick="selectLang(this)">
+        <span class="lang-script">English</span>
+        <span class="lang-name">English</span>
+      </button>
+    </div>
+
+    <div class="section-label">✨ जल्द आने वाली भाषाएँ</div>
+    <div class="coming-soon-grid">
+      <span class="coming-soon-badge">অসমীয়া Assamese</span>
+      <span class="coming-soon-badge">मैथिली Maithili</span>
+      <span class="coming-soon-badge">राजस्थानी Rajasthani</span>
+      <span class="coming-soon-badge">कोंकणी Konkani</span>
+      <span class="coming-soon-badge">डोगरी Dogri</span>
+      <span class="coming-soon-badge">छत्तीसगढ़ी Chhattisgarhi</span>
+    </div>
+
+    <!-- Persona Selection -->
+    <div class="persona-section" id="personaSection">
+      <div class="section-label">👤 आप कौन हैं?</div>
+      <div class="persona-grid" id="personaGrid">
+        <button class="persona-btn" data-persona="kisan" onclick="selectPersona(this)">
+          <span class="persona-emoji">👨‍🌾</span>
+          <span class="persona-label">Kisan</span>
+        </button>
+        <button class="persona-btn" data-persona="teacher" onclick="selectPersona(this)">
+          <span class="persona-emoji">👩‍🏫</span>
+          <span class="persona-label">Teacher</span>
+        </button>
+        <button class="persona-btn" data-persona="dukandaar" onclick="selectPersona(this)">
+          <span class="persona-emoji">🏪</span>
+          <span class="persona-label">Dukandaar</span>
+        </button>
+        <button class="persona-btn" data-persona="retired" onclick="selectPersona(this)">
+          <span class="persona-emoji">👴</span>
+          <span class="persona-label">Retired</span>
+        </button>
+        <button class="persona-btn" data-persona="student" onclick="selectPersona(this)">
+          <span class="persona-emoji">🎓</span>
+          <span class="persona-label">Student</span>
+        </button>
+        <button class="persona-btn" data-persona="doctor" onclick="selectPersona(this)">
+          <span class="persona-emoji">🏥</span>
+          <span class="persona-label">Doctor</span>
+        </button>
+        <button class="persona-btn" data-persona="parent" onclick="selectPersona(this)">
+          <span class="persona-emoji">👨‍👩‍👧</span>
+          <span class="persona-label">Parent</span>
+        </button>
+        <button class="persona-btn" data-persona="business" onclick="selectPersona(this)">
+          <span class="persona-emoji">💼</span>
+          <span class="persona-label">Business</span>
+        </button>
+        <button class="persona-btn" data-persona="nurse" onclick="selectPersona(this)">
+          <span class="persona-emoji">👩‍⚕️</span>
+          <span class="persona-label">Nurse</span>
+        </button>
+        <button class="persona-btn" data-persona="freelancer" onclick="selectPersona(this)">
+          <span class="persona-emoji">💻</span>
+          <span class="persona-label">Freelancer</span>
+        </button>
+      </div>
+
+      <div class="persona-preview" id="personaPreview" aria-live="polite">
+        <div class="persona-preview-title">मीरा की समझाने की शैली</div>
+        <div class="persona-preview-text" id="personaPreviewText">व्यक्ति-प्रकार चुनते ही यहाँ पूर्वावलोकन दिखेगा।</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="cta-btn" id="startBtn" onclick="startApp()" disabled>
+      🚀 शुरुआत करें
+    </button>
+
+    <!-- Footer badges -->
+    <div class="landing-footer">
+      <p>AI समर्थित • बैंकिंग डेटा सुरक्षित</p>
+      <div class="badges">
+        <span class="badge">🔒 सुरक्षित</span>
+        <span class="badge">🏛️ RBI मानक</span>
+        <span class="badge">🆓 100% Free</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">मीरा को तैयार कर रहे हैं...</div>
+</div>
+
+<script src="js/puter-init.js"></script>
+<script src="js/index-ui.js"></script>
+
+</body>
+</html>
